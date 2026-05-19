@@ -86,27 +86,27 @@
 
 /* 3D ROTATION AF SIDERNE */
 .one {
-    transform: rotateY(0deg) translateZ(30px);
+    transform: rotateY(0deg) translateZ(32px);
 }
 
 .six {
-    transform: rotateY(180deg) translateZ(30px);
+    transform: rotateY(180deg) translateZ(32px);
 }
 
 .three {
-    transform: rotateY(90deg) translateZ(30px);
+    transform: rotateY(90deg) translateZ(32px);
 }
 
 .four {
-    transform: rotateY(-90deg) translateZ(30px);
+    transform: rotateY(-90deg) translateZ(32px);
 }
 
 .five {
-    transform: rotateX(90deg) translateZ(30px);
+    transform: rotateX(90deg) translateZ(32px);
 }
 
 .two {
-    transform: rotateX(-90deg) translateZ(30px);
+    transform: rotateX(-90deg) translateZ(32px);
 }
 
 /* SPIN ANIMATION */

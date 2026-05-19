@@ -75,7 +75,7 @@
     @if (showActionModal && landedTile != null)
     {
         <div class="modal-overlay">
-            <div class="modal-content" style="border-top: 10px solid @players[currentPlayerIndex].Color;">
+            <div class="modal-content" style="border-top: 10px solid; @players[currentPlayerIndex].Color;">
                 <h4 style="color: @players[currentPlayerIndex].Color;"><strong>@players[currentPlayerIndex].Name</strong> landede på...</h4>
 
                 <div class="action-card">
@@ -193,6 +193,7 @@
         string[] colors = { "#d63031", "#0984e3", "#00b894", "#fdcb6e" };
         return colors[index % colors.Length];*/
     }
+
 
     private async Task HandleDiceRoll(int rollResult)
     {
