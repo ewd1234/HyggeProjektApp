@@ -120,12 +120,12 @@
                 case 0:
                     tile.Title = "START";
                     tile.Description = "Velkommen! Alle tager en start-slurk for at skyde spillet i gang.";
-                    tile.Color = "#A9C9C4";
+                    tile.Color = "#0f5132";
                     break;
                 case 39:
                     tile.Title = "MÅL";
                     tile.Description = "Tillykke! Du har vundet. Du må uddele 10 slurke, og alle andre skal bunde!";
-                    tile.Color = "#B9DDB3";
+                    tile.Color = "#5c1d24";
                     break;
                 case 5:
                     tile.Title = "KATEGORI";
@@ -187,8 +187,11 @@
 
     private string GetTileColor(int index)
     {
-        string[] colors = { "#e6b422", "#458b00", "#104e8b", "#b22222" };
-        return colors[index % colors.Length];
+
+        return index % 2 == 0 ? "#1e293b" : "#334155";
+        /*
+        string[] colors = { "#d63031", "#0984e3", "#00b894", "#fdcb6e" };
+        return colors[index % colors.Length];*/
     }
 
     private async Task HandleDiceRoll(int rollResult)
