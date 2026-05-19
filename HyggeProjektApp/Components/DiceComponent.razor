@@ -1,0 +1,66 @@
+﻿@using System.Threading.Tasks
+
+<div class="dice-wrapper">
+    @* Vi binder både class og style her *@
+    <div class="dice @diceAnimationClass" style="@diceRotationStyle">
+        <div class="side one">1</div>
+        <div class="side two">2</div>
+        <div class="side three">3</div>
+        <div class="side four">4</div>
+        <div class="side five">5</div>
+        <div class="side six">6</div>
+    </div>
+</div>
+
+<div class="text-center mt-3">
+    <button class="btn btn-danger btn-lg" @onclick="RollDice" disabled="@isRolling">
+        @((isRolling) ? "Ruller..." : "Kast Terning")
+    </button>
+</div>
+
+@code {
+    [Parameter] public EventCallback<int> OnRollFinished { get; set; }
+
+    private string diceAnimationClass = "";
+    private string diceRotationStyle = "";
+    private bool isRolling = false;
+    private Random rng = new Random();
+
+    private async Task RollDice()
+    {
+        if (isRolling) return;
+
+        isRolling = true;
+        diceAnimationClass = "rolling";
+        StateHasChanged();
+
+        await Task.Delay(1000); // Den vilde spin-fase
+
+        int roll = rng.Next(1, 7);
+        diceAnimationClass = ""; // Stop spin-animationen
+        StateHasChanged();
+
+        await Task.Delay(50); // Lille pause så CSS kan mærke skiftet
+
+        // Vi tilføjer 720 eller 1080 grader for at få den til at rulle "rigtigt" på plads
+        // Du kan justere tallene for at få den til at dreje mere eller mindre vildt
+        diceRotationStyle = roll switch
+        {
+            1 => "transform: rotateY(720deg) rotateX(720deg);",
+            2 => "transform: rotateY(720deg) rotateX(810deg);", // 720 + 90
+            3 => "transform: rotateY(630deg) rotateX(720deg);", // 720 - 90
+            4 => "transform: rotateY(810deg) rotateX(720deg);", // 720 + 90
+            5 => "transform: rotateY(720deg) rotateX(630deg);", // 720 - 90
+            6 => "transform: rotateY(900deg) rotateX(720deg);", // 720 + 180
+            _ => ""
+        };
+
+        StateHasChanged();
+
+        // Giv den tid til at færdiggøre den vilde landing
+        await Task.Delay(2000);
+
+        isRolling = false;
+        await OnRollFinished.InvokeAsync(roll);
+    }
+}

@@ -1,0 +1,62 @@
+﻿@page "/"
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+@inject NavigationManager navMan
+@using Core.Models
+
+<PageTitle>Hjem - Drukspil</PageTitle>
+
+<div class="page">
+    <div class="content-box">
+
+        <h1>Choose number of players</h1>
+        <p class="subtitle">Vælg antallet af deltagere for at starte spillet</p>
+
+        <div class="player-buttons-grid">
+            @for (int j = 2; j <= 6; j++)
+            {
+                int currentCount = j;
+                bool isSelected = savedCount == currentCount;
+
+                <button type="button"
+                        class="btn-player-count @(isSelected ? "selected" : "")"
+                        @onclick="() => SetNumOfPlayers(currentCount)">
+                    @currentCount
+                </button>
+            }
+        </div>
+
+        @if (savedCount > 0)
+        {
+            <p class="selection-text">Du har valgt: <strong>@savedCount</strong> spillere.</p>
+        }
+
+        <button type="button" class="next-btn" @onclick="Transfer" disabled="@(savedCount == 0)">
+            Next
+        </button>
+    </div>
+</div>
+
+@code {
+    private int savedCount;
+
+    private async Task SetNumOfPlayers(int count)
+    {
+        savedCount = count;
+        await localStorage.SetItemAsync("NumOfPlayers", count);
+    }
+
+    private void Transfer()
+    {
+        navMan.NavigateTo("/setup");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            savedCount = await localStorage.GetItemAsync<int>("NumOfPlayers");
+            StateHasChanged();
+        }
+    }
+}

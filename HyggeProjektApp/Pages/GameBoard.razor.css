@@ -1,0 +1,231 @@
+﻿/* Sørg for at baggrunden altid er mørk, så der ikke "blinker" hvidt ved rotation */
+html, body {
+    background-color: #1a1a1a;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Layout og Container */
+.board-container {
+    position: fixed; /* Gør den uafhængig af andre elementer på siden */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px; /* Lille luft til kanten */
+    box-sizing: border-box;
+    overflow: hidden; /* Forbyd scroll */
+    z-index: 100;
+}
+
+/* Gridet tilpasses så det altid prøver at holde proportionerne i landscape */
+.board-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 4px;
+    /* Dette er magien: Den må max være 100% af containerens højde minus padding */
+    width: 100%;
+    height: 100%;
+    max-height: calc(100vh - 20px);
+    background-color: #222;
+    border: 5px solid #333;
+    border-radius: 12px;
+    padding: 5px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Felter */
+.tile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    /* Sikrer at feltet aldrig bliver højere end det skal være */
+    min-height: 0;
+}
+
+.tile-title {
+    font-size: clamp(0.6rem, 1.5vh, 1rem); /* Bruger vh (view-height) til skrifttype */
+    text-transform: uppercase;
+    margin: 2px;
+    pointer-events: none;
+}
+
+.tile-id {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-size: 0.6rem;
+    opacity: 0.4;
+}
+
+/* Spillerbrikker */
+.player-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+}
+
+.player-piece {
+    width: clamp(12px, 2.5vh, 22px);
+    height: clamp(12px, 2.5vh, 22px);
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+    .player-piece.active {
+        box-shadow: 0 0 20px 8px rgba(255, 255, 255, 0.7);
+        animation: pulse 1.5s infinite;
+        z-index: 20;
+    }
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Modaler */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75); /* En anelse mørkere for bedre fokus */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 10px; /* Sikrer luft hele vejen rundt på helt små skærme */
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.98); /* Lidt mindre gennemsigtig for bedre tekst-kontrast */
+    backdrop-filter: blur(10px);
+    padding: 1.5rem; /* Mindre padding sparer masser af vertikal plads */
+    border-radius: 20px;
+    text-align: center;
+    width: 95%;
+    max-width: 420px;
+    /* MAGIEN SKER HER: */
+    max-height: 90vh; /* Fylder aldrig mere end 90% af skærmens højde */
+    overflow-y: auto; /* Tillader scroll indeni hvis indholdet er for stort */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Skubber elementerne flot ud */
+
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+}
+    .modal-content h2, .modal-content h4 {
+        font-size: clamp(1rem, 4vh, 1.5rem);
+        margin-bottom: 5px;
+    }
+
+    .modal-content hr {
+        margin: 8px 0;
+        opacity: 0.2;
+    }
+
+/* Action kortet indeni modalen */
+.action-card {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0; /* Tillader flex-børn at krympe korrekt */
+}
+
+    .action-card h2 {
+        font-size: clamp(1.2rem, 5vh, 1.8rem);
+        margin: 8px 0 !important;
+    }
+
+.action-description {
+    font-size: clamp(0.9rem, 3.5vh, 1.15rem); /* Skalerer flydende med skærmhøjden */
+    line-height: 1.4;
+    color: #222;
+    margin: 10px 0;
+    overflow-y: auto; /* Hvis teksten mod forventning er gigantisk */
+}
+
+/* Sørg for at knappen ikke bliver for voldsom på lave skærme */
+.modal-content .btn {
+    padding: clamp(8px, 2vh, 15px) 15px;
+    font-size: clamp(0.9rem, 3vh, 1.1rem);
+}
+
+.action-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #222;
+    margin: 20px 0;
+}
+
+.player-indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+    border: 2px solid #555;
+}
+
+/* Grundindstilling: Skjul altid beskeden */
+.rotate-notice {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0f172a !important; /* Mørkeblå */
+    z-index: 99999 !important; /* Tving den øverst af ALT */
+}
+
+.rotate-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    color: white !important;
+}
+
+/* Vis kun når skærmen er højere end den er bred (Portrait) */
+@media screen and (max-aspect-ratio: 1/1) {
+    .rotate-notice {
+        display: block !important;
+    }
+
+    /* Skjul spillet fuldstændigt så det ikke driller i baggrunden */
+    .board-container, .modal-overlay {
+        display: none !important;
+    }
+}

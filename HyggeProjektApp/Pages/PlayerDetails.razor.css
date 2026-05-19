@@ -1,0 +1,232 @@
+﻿/* RESET & BASE */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: #0f172a;
+}
+
+/* PAGE */
+.player-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px; /* Mindre padding i siderne på mobil */
+    background: radial-gradient(circle at top left, #1e293b, transparent 40%), radial-gradient(circle at bottom right, #2563eb33, transparent 35%), #0f172a;
+}
+
+/* MAIN CARD */
+.setup-card {
+    width: 100%;
+    max-width: 1200px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 36px;
+    padding: 50px;
+    backdrop-filter: blur(18px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+}
+
+    /* TITLE */
+    .setup-card h3 {
+        margin: 0;
+        color: white;
+        font-size: clamp(2rem, 5vw, 3.5rem); /* Flydende størrelse baseret på skærmen */
+        font-weight: 800;
+        text-align: center;
+    }
+
+.subtitle {
+    margin-top: 12px;
+    margin-bottom: 40px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+}
+
+/* PLAYERS LIST GRID */
+.players-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+/* PLAYER CARD */
+.player-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 24px;
+    padding: 24px;
+    transition: transform 0.25s ease, background 0.25s ease;
+    position: relative;
+}
+
+@media (min-width: 769px) {
+    .player-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255,255,255,0.08);
+    }
+}
+
+/* PLAYER NUMBER */
+.player-header {
+    margin-bottom: 20px;
+}
+
+.player-title {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 8px 20px rgba(37,99,235,0.3);
+}
+
+/* INPUT GROUP */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+    .input-group label {
+        margin-bottom: 8px;
+        color: #e2e8f0;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    /* TEXT INPUT */
+    .input-group input[type="text"] {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.2); /* Mørkere baggrund øger læsbarhed markant */
+        color: white;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        -webkit-appearance: none; /* Sikrer ens udseende på iOS Safari */
+    }
+
+        .input-group input[type="text"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.25);
+        }
+
+    .input-group input::placeholder {
+        color: #64748b;
+    }
+
+/* COLOR GRID - Optimeret til 6 farver */
+.color-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr) !important; /* Tvinger altid 6 spalter */
+    gap: 8px; /* Lidt mindre gap sikrer, at de ikke ruller over kanten */
+    width: 100%;
+}
+
+/* COLOR BUTTON */
+.color-circle {
+    width: 100% !important; /* Cirklen fylder præcis sin spalte ud */
+    max-width: 44px; /* Sætter et max, så de ikke bliver gigantiske på store skærme */
+    aspect-ratio: 1 / 1 !important; /* Garanterer at de forbliver 100% runde */
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    padding: 0;
+    margin: 0 auto; /* Centrerer cirklen i sin spalte, hvis max-width rammes */
+}
+
+    .color-circle.selected {
+        border-color: white;
+        transform: scale(1.1);
+        box-shadow: 0 0 0 4px rgba(255,255,255,0.15), 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .color-circle.taken {
+        opacity: 0.15;
+        cursor: not-allowed;
+        filter: grayscale(100%);
+        transform: scale(0.9);
+    }
+
+/* START BUTTON */
+.start-btn {
+    margin: 40px auto 0 auto;
+    display: block;
+    width: 100%;
+    max-width: 320px; /* Nemmere at trykke på mobil, når den strækker sig lidt */
+    padding: 18px 40px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 12px 30px rgba(37,99,235,0.35);
+}
+
+    .start-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none !important;
+    }
+
+/* --- DEN SKARPE MOBIL OPTIMERING (Under 768px) --- */
+@media (max-width: 768px) {
+    .player-page {
+        padding: 16px 12px; /* Giver spillet maksimal plads på små skærme */
+    }
+
+    .setup-card {
+        padding: 24px 16px; /* Mindre spildplads indeni kortet */
+        border-radius: 24px;
+    }
+
+    .subtitle {
+        margin-bottom: 30px;
+    }
+
+    .players-container {
+        grid-template-columns: 1fr; /* Spillerne stables lodret */
+        gap: 16px; /* Tættere, men lækker afstand */
+    }
+
+    .player-card {
+        padding: 20px 16px;
+        border-radius: 18px;
+    }
+
+    /* På mobil lader vi farverne fordele sig over 6 spalter, så det bliver én lang række */
+    .color-picker-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+    }
+
+    /* Gør teksten en anelse større i inputs så iOS Safari ikke auto-zoomer siden ind */
+    .input-group input[type="text"] {
+        font-size: 16px;
+    }
+
+    .start-btn {
+        margin-top: 30px;
+        width: 100%; /* Knappen fylder hele bredden af kortet på mobil */
+        max-width: 100%;
+    }
+}

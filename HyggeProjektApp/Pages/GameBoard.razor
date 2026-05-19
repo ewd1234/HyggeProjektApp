@@ -1,0 +1,241 @@
+﻿@page "/gameboard"
+@using Core.Models
+@using Blazored.LocalStorage
+@using HyggeProjektApp.Components
+@inject ILocalStorageService localStorage
+
+<div class="rotate-notice">
+    <div class="rotate-content">
+        <div style="font-size: 4rem;">🔄</div>
+        <h2 style="margin-top: 20px; color: white !important;">Vend skærmen</h2>
+        <p style="color: white !important;">Læg telefonen ned for at spille.</p>
+    </div>
+</div>
+
+@if (players != null && players.Count > 0)
+{
+    <div class="board-container">
+        <div class="board-grid">
+            @{
+                int columns = 8;
+                int rowCount = 5;
+
+                for (int r = 0; r < rowCount; r++)
+                {
+                    // Hent felter for den aktuelle række
+                    var rowTiles = BoardTiles.Skip(r * columns).Take(columns).ToList();
+
+                    // Vend rækkefølgen for hver anden række (Snake-mønster)
+                    if (r % 2 != 0)
+                    {
+                        rowTiles.Reverse();
+                    }
+
+                    @foreach (var tile in rowTiles)
+                    {
+                        <div class="tile" style="background-color: @tile.Color;">
+                            <span class="tile-id">@tile.Id</span>
+
+                            <div class="tile-title">@tile.Title</div>
+
+                            <div class="player-container">
+                                @foreach (var p in players.Where(x => x.Position == tile.Id))
+                                {
+                                    @* Tilføjer 'active' klasse hvis det er spillerens tur *@
+                                    <div class="player-piece @(p == players[currentPlayerIndex] ? "active" : "")"
+                                         style="background-color: @p.Color;"
+                                         title="@p.Name">
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+
+    @* Terning Modal *@
+    @if (showDiceModal)
+    {
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <h2>
+                    <span class="player-indicator" style="background-color: @players[currentPlayerIndex].Color"></span>
+                    @players[currentPlayerIndex].Name's tur
+                </h2>
+                <hr />
+                <p>Kast terningen for at rykke!</p>
+                <DiceComponent OnRollFinished="HandleDiceRoll" />
+            </div>
+        </div>
+    }
+
+    @* Action Modal *@
+    @if (showActionModal && landedTile != null)
+    {
+        <div class="modal-overlay">
+            <div class="modal-content" style="border-top: 10px solid @players[currentPlayerIndex].Color;">
+                <h4 style="color: @players[currentPlayerIndex].Color;"><strong>@players[currentPlayerIndex].Name</strong> landede på...</h4>
+
+                <div class="action-card">
+                    <h2 style="font-weight: bold; margin: 15px 0;">@landedTile.Title</h2>
+                    <hr />
+                    <p class="action-description">
+                        @landedTile.Description
+                    </p>
+                </div>
+
+                <button class="btn btn-primary w-100 mt-3 btn-lg" @onclick="CloseActionAndNextTurn">
+                    Færdig - Næste spiller!
+                </button>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private int currentPlayerIndex = 0;
+    private List<Tile> BoardTiles = new();
+    private List<Player> players = new();
+    private bool showDiceModal = true;
+    private bool showActionModal = false;
+    private Tile? landedTile;
+
+    protected override void OnInitialized()
+    {
+        GenerateBoard();
+    }
+
+    private void GenerateBoard()
+    {
+        BoardTiles.Clear();
+        for (int i = 0; i < 40; i++)
+        {
+            var tile = new Tile { Id = i };
+            tile.Color = GetTileColor(i);
+
+            switch (i)
+            {
+                case 0:
+                    tile.Title = "START";
+                    tile.Description = "Velkommen! Alle tager en start-slurk for at skyde spillet i gang.";
+                    tile.Color = "#A9C9C4";
+                    break;
+                case 39:
+                    tile.Title = "MÅL";
+                    tile.Description = "Tillykke! Du har vundet. Du må uddele 10 slurke, og alle andre skal bunde!";
+                    tile.Color = "#B9DDB3";
+                    break;
+                case 5:
+                    tile.Title = "KATEGORI";
+                    tile.Description = "Du vælger en kategori (f.eks. ølmærker). Den første der ikke kan nævne et, drikker 2 slurke.";
+                    break;
+                case 10:
+                    tile.Title = "VANDPAUSE";
+                    tile.Description = "Drik en tår vand eller tag 3 straf-slurke.";
+                    break;
+                case 15:
+                    tile.Title = "FÆLLESSKÅL";
+                    tile.Description = "Alle tager 2 slurke. Skål!";
+                    break;
+                case 20:
+                    tile.Title = "TOMMELFINGER";
+                    tile.Description = "Du er tommelfinger-mester indtil næste gang en lander her!";
+                    break;
+                case 25:
+                    tile.Title = "VANDFALD";
+                    tile.Description = "Alle starter med at drikke. Du bestemmer hvornår der må stoppes.";
+                    break;
+                case 30:
+                    tile.Title = "KOMPLIMENT";
+                    tile.Description = "Giv komplimenter og giv en slurk ud for hver person.";
+                    break;
+                case 35:
+                    tile.Title = "VARME STOL";
+                    tile.Description = "Svar ærligt på et spørgsmål eller drik 5 slurke.";
+                    break;
+                default:
+                    if (i % 3 == 0)
+                    {
+                        tile.Title = "DEL UD";
+                        tile.Description = $"Giv {(i % 3) + 2} slurke væk.";
+                    }
+                    else
+                    {
+                        tile.Title = "DRIK";
+                        tile.Description = $"Tag selv {(i % 2) + 1} slurke.";
+                    }
+                    break;
+            }
+            BoardTiles.Add(tile);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var savedPlayers = await localStorage.GetItemAsync<List<Player>>("FinalPlayers");
+            if (savedPlayers != null)
+            {
+                players = savedPlayers;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private string GetTileColor(int index)
+    {
+        string[] colors = { "#e6b422", "#458b00", "#104e8b", "#b22222" };
+        return colors[index % colors.Length];
+    }
+
+    private async Task HandleDiceRoll(int rollResult)
+    {
+        showDiceModal = false;
+        StateHasChanged();
+        await Task.Delay(500);
+        await FlytSpiller(rollResult);
+    }
+
+    private async Task FlytSpiller(int antalFelter)
+    {
+        var currentPlayer = players[currentPlayerIndex];
+
+        for (int i = 0; i < antalFelter; i++)
+        {
+            if (currentPlayer.Position < 39)
+            {
+                currentPlayer.Position++;
+                StateHasChanged();
+                await Task.Delay(900); // Gør bevægelsen rolig
+            }
+        }
+
+        await localStorage.SetItemAsync("FinalPlayers", players);
+        landedTile = BoardTiles.FirstOrDefault(t => t.Id == currentPlayer.Position);
+
+        await Task.Delay(800);
+        showActionModal = true;
+        StateHasChanged();
+    }
+
+    private void NextTurn()
+    {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
+    }
+
+    private async Task CloseActionAndNextTurn()
+    {
+        showActionModal = false;
+        StateHasChanged();
+
+        NextTurn();
+
+        await Task.Delay(600); // Pause så man kan se brættet
+
+        showDiceModal = true;
+        StateHasChanged();
+    }
+}

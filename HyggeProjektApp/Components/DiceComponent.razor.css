@@ -1,0 +1,71 @@
+﻿.dice-wrapper {
+    perspective: 600px;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.dice {
+    width: 60px;
+    height: 60px;
+    position: relative;
+    transform-style: preserve-3d;
+    /* transition SKAL være her for at den glider på plads ved stop */
+    transition: transform 1.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+.side {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: white;
+    border: 2px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Definition af siderne */
+.one {
+    transform: rotateY(0deg) translateZ(30px);
+}
+
+.six {
+    transform: rotateY(180deg) translateZ(30px);
+}
+
+.three {
+    transform: rotateY(90deg) translateZ(30px);
+}
+
+.four {
+    transform: rotateY(-90deg) translateZ(30px);
+}
+
+.five {
+    transform: rotateX(90deg) translateZ(30px);
+}
+
+.two {
+    transform: rotateX(-90deg) translateZ(30px);
+}
+
+/* Selve spin-animationen */
+.rolling {
+    animation: spin 0.4s infinite linear;
+    transition: none !important; /* Ingen glidning MENS den spinner vildt */
+}
+
+@@keyframes spin {
+    0% {
+        transform: rotateX(0deg) rotateY(0deg);
+    }
+
+    100% {
+        transform: rotateX(360deg) rotateY(360deg);
+    }
+}

@@ -1,0 +1,162 @@
+﻿/* BASE RESET */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: #0f172a;
+}
+
+/* FULL PAGE CONTAINER */
+.page {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    background: radial-gradient(circle at top left, #1e293b, transparent 40%), radial-gradient(circle at bottom right, #2563eb33, transparent 35%), #0f172a;
+}
+
+/* GLASS CARD (Matcher setup-siden perfekt nu) */
+.content-box {
+    width: 100%;
+    max-width: 900px; /* Gjort bredere igen så teksten har masser af plads på PC */
+    text-align: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 36px;
+    padding: 60px 40px;
+    backdrop-filter: blur(18px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+/* OVERSKRIFT */
+h1 {
+    font-size: clamp(2.2rem, 5vw, 4rem); /* Stor og flot på PC, skalerer ned på mobil */
+    margin: 0 0 12px 0;
+    font-weight: 800;
+    color: white;
+}
+
+.subtitle {
+    margin-top: 0;
+    margin-bottom: 50px;
+    color: #94a3b8;
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+}
+
+/* SPILLER-KNAPPER CONTAINER */
+.player-buttons-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+/* STORE FLOTTE RUNDE KNAPPER (Nulstillet fra Bootstrap) */
+.btn-player-count {
+    width: 120px !important; /* Fast størrelse på PC */
+    height: 120px !important; /* Fast størrelse på PC */
+    min-width: 120px;
+    min-height: 120px;
+    border-radius: 50% !important;
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+    font-size: 2.8rem !important;
+    font-weight: 700 !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: white !important;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .btn-player-count:hover {
+        transform: translateY(-5px) scale(1.05);
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.4) !important;
+    }
+
+    /* NÅR KNAPPEN ER VALGT */
+    .btn-player-count.selected {
+        background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+        border-color: white !important;
+        transform: scale(1.1);
+        box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.3), 0 12px 35px rgba(37, 99, 235, 0.5);
+    }
+
+/* SELECTION TEXT */
+.selection-text {
+    font-size: 1.6rem;
+    color: #e2e8f0;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+/* NEXT KNAP */
+.next-btn {
+    margin-top: 20px;
+    padding: 18px 60px;
+    width: 100%;
+    max-width: 280px;
+    border: none;
+    border-radius: 999px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.35);
+}
+
+    .next-btn:hover:not(:disabled) {
+        transform: scale(1.05);
+        box-shadow: 0 12px 30px rgba(34, 197, 94, 0.5);
+    }
+
+    .next-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+/* --- MOBIL OPTIMERING --- */
+@media (max-width: 768px) {
+    .content-box {
+        padding: 40px 20px;
+        border-radius: 28px;
+    }
+
+    .subtitle {
+        margin-bottom: 35px;
+    }
+
+    .player-buttons-grid {
+        gap: 12px;
+    }
+
+    /* Gør dem mindre på mobilen så de ikke fylder det hele */
+    .btn-player-count {
+        width: 65px !important;
+        height: 65px !important;
+        min-width: 65px;
+        min-height: 65px;
+        font-size: 1.6rem !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .next-btn {
+        max-width: 100%;
+    }
+}

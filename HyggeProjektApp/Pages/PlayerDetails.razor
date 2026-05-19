@@ -1,0 +1,112 @@
+﻿@page "/setup"
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+@inject NavigationManager navMan
+@using Core.Models
+
+<div class="player-page">
+
+    <div class="setup-card">
+
+        <h3>Indtast spillere</h3>
+        <p class="subtitle">Vælg navn og brik til hver spiller</p>
+
+        @if (players != null)
+        {
+            <div class="players-container">
+
+                @foreach (var p in players)
+                {
+                    <div class="player-card">
+
+                        <div class="player-header">
+                            <span class="player-title">
+                                @(players.IndexOf(p) + 1)
+                            </span>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Navn</label>
+
+                            <input type="text"
+                                   @bind="p.Name"
+                                   placeholder="Skriv navn..." />
+                        </div>
+
+                        <div class="input-group">
+                            <label>Vælg brik</label>
+
+                            <div class="color-picker-grid">
+                                @foreach (var color in AvailableColors)
+                                {
+                                    bool isTaken = players.Any(other => other != p && other.Color == color);
+                                    bool isSelected = p.Color == color;
+
+                                    <button type="button"
+                                            class="color-circle @(isSelected ? "selected" : "") @(isTaken ? "taken" : "")"
+                                            style="background-color: @color"
+                                            disabled="@isTaken"
+                                            @onclick="() => p.Color = color">
+                                    </button>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+            <button class="start-btn"
+                    @onclick="GemOgStart"
+                    disabled="@(!AllPlayersHaveColorAndName())">
+
+                Start spil
+            </button>
+        }
+
+    </div>
+
+</div>
+
+@code {
+    private List<Player> players;
+
+    // De 6 hardcodede farver
+    private List<string> AvailableColors = new()
+    {
+        "#e74c3c", // Rød
+        "#3498db", // Blå
+        "#2ecc71", // Grøn
+        "#f1c40f", // Gul
+        "#9b59b6", // Lilla
+        "#e67e22"  // Orange
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            int count = await localStorage.GetItemAsync<int>("NumOfPlayers");
+            players = new List<Player>();
+
+            for (int j = 0; j < count; j++)
+            {
+                players.Add(new Player { Color = "" }); // Start uden farve
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    private bool AllPlayersHaveColorAndName()
+    {
+        return players != null && players.All(p => !string.IsNullOrEmpty(p.Color)) && players != null && players.All(p => !string.IsNullOrEmpty(p.Name));
+    }
+
+    private async Task GemOgStart()
+    {
+        await localStorage.SetItemAsync("FinalPlayers", players);
+        navMan.NavigateTo("/gameboard");
+    }
+}
