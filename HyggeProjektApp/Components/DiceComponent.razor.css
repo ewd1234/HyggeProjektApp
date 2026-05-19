@@ -2,34 +2,89 @@
     perspective: 600px;
     display: flex;
     justify-content: center;
-    padding: 20px;
+    padding: 30px;
 }
 
 .dice {
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
     position: relative;
     transform-style: preserve-3d;
-    /* transition SKAL være her for at den glider på plads ved stop */
-    transition: transform 1.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    transition: transform 1.8s cubic-bezier(0.2, 0.8, 0.3, 1);
 }
 
 .side {
     position: absolute;
-    width: 60px;
-    height: 60px;
-    background: white;
-    border: 2px solid #333;
+    /* Gøres 2px større end .dice for at tvinge et overlap i hjørnerne */
+    width: 66px;
+    height: 66px;
+    /* Vi flytter den -1px for at centrere overlappet perfekt */
+    top: -1px;
+    left: -1px;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Gør kanten tyndere, så den ikke fremhæver sprækkerne */
+    border-radius: 12px; /* Lidt mindre radius lukker hullerne bedre */
+    /* Den vigtige del: Denne skygge 'bløder' ud i hjørnerne og fjerner gennemsigtigheden */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8), 0 0 4px rgba(0, 0, 0, 0.9);
+    padding: 8px;
+    box-sizing: border-box;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    border-radius: 8px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
 }
 
-/* Definition af siderne */
+/* PRIKKERNE OG DERES NEON GLØD */
+.dot {
+    display: block;
+    width: 8px;
+    height: 8px;
+    background-color: #00d2fc; /* Fed neon cyan-blå. Ændr til #ffffff hvis du vil have rent hvid */
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(0, 210, 252, 0.8); /* Giver prikkerne lys */
+}
+
+/* FLEXBOX LAYOUT TIL PLACERING AF PRIKKER */
+.one {
+    justify-content: center;
+    align-items: center;
+}
+
+.two {
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+    .two .dot:nth-child(2) {
+        align-self: flex-end;
+    }
+
+.three {
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+    .three .dot:nth-child(2) {
+        align-self: center;
+    }
+
+    .three .dot:nth-child(3) {
+        align-self: flex-end;
+    }
+
+.four, .five, .six {
+    justify-content: space-between;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.flex-center {
+    justify-content: center;
+}
+
+/* 3D ROTATION AF SIDERNE */
 .one {
     transform: rotateY(0deg) translateZ(30px);
 }
@@ -54,13 +109,13 @@
     transform: rotateX(-90deg) translateZ(30px);
 }
 
-/* Selve spin-animationen */
+/* SPIN ANIMATION */
 .rolling {
-    animation: spin 0.4s infinite linear;
-    transition: none !important; /* Ingen glidning MENS den spinner vildt */
+    animation: spin 0.35s infinite linear;
+    transition: none !important;
 }
 
-@@keyframes spin {
+@keyframes spin {
     0% {
         transform: rotateX(0deg) rotateY(0deg);
     }
@@ -69,3 +124,28 @@
         transform: rotateX(360deg) rotateY(360deg);
     }
 }
+
+/* DEN NYE KAST-TERNING KNAP (Matcher forsiden og setup) */
+.dice-roll-btn {
+    padding: 12px 35px;
+    border: none;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+}
+
+    .dice-roll-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
+    }
+
+    .dice-roll-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
