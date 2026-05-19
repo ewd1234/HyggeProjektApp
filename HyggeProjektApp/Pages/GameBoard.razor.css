@@ -124,31 +124,43 @@ html, body {
 }
 
 .modal-content {
-    background: rgba(255, 255, 255, 0.98); /* Lidt mindre gennemsigtig for bedre tekst-kontrast */
-    backdrop-filter: blur(10px);
-    padding: 1.5rem; /* Mindre padding sparer masser af vertikal plads */
-    border-radius: 20px;
-    text-align: center;
-    width: 95%;
-    max-width: 420px;
-    /* MAGIEN SKER HER: */
-    max-height: 90vh; /* Fylder aldrig mere end 90% af skærmens højde */
-    overflow-y: auto; /* Tillader scroll indeni hvis indholdet er for stort */
+    /* 1. OPDATERET STI: Nu peger den korrekt ind i din nye images-mappe */
+    background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.92)), url('/images/Beer_Modal_Background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* 2. BOKS-FIX: Tvinger den væk fra det flade pandekage-look */
+    max-width: 550px;
+    width: 100%;
+    margin: 30px auto;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Skubber elementerne flot ud */
-
-    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    /* Visuelle luksus-detaljer */
+    color: #ffffff !important;
+    border-radius: 24px !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7) !important;
+    padding: 25px;
     box-sizing: border-box;
 }
-    .modal-content h2, .modal-content h4 {
-        font-size: clamp(1rem, 4vh, 1.5rem);
-        margin-bottom: 5px;
+
+    /* 3. BOOTSTRAP RESET: Vi tvinger alle under-elementer til at være gennemsigtige, 
+   så dit øl-billede ikke bliver dækket af Bootstraps standard-farver */
+    .modal-header, .modal-body, .modal-footer, .modal-content div {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        color: #ffffff !important;
     }
 
-    .modal-content hr {
-        margin: 8px 0;
-        opacity: 0.2;
+    /* Sørger for at alle tekster forbliver kridhvide og nemme at læse */
+    .modal-content h2,
+    .modal-content h3,
+    .modal-content h5,
+    .modal-content p,
+    .modal-content span {
+        color: #ffffff !important;
+        text-align:center;
     }
 
 /* Action kortet indeni modalen */

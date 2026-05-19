@@ -21,7 +21,7 @@
     /* Vi flytter den -1px for at centrere overlappet perfekt */
     top: -1px;
     left: -1px;
-    background: linear-gradient(135deg, #1e293b, #0f172a);
+    background: linear-gradient(135deg, #3D0052, #0f172a);
     border: 1px solid rgba(255, 255, 255, 0.1); /* Gør kanten tyndere, så den ikke fremhæver sprækkerne */
     border-radius: 12px; /* Lidt mindre radius lukker hullerne bedre */
     /* Den vigtige del: Denne skygge 'bløder' ud i hjørnerne og fjerner gennemsigtigheden */
